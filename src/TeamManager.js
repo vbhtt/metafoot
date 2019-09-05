@@ -28,11 +28,11 @@ const uuid = () =>
 	})
 
 const generateTeams = teamMembers => {
-	const members = teamMembers.map(teamMember => ({
+	let members = teamMembers.map(teamMember => ({
 		...teamMember,
 		id: uuid(),
 	}))
-	members.sort((a, b) => a.id > b.id)
+	members = members.sort((a, b) => (a.id > b.id ? 1 : -1))
 	const mid = members.length / 2
 	const teams = [members.slice(0, mid), members.slice(mid, members.length)]
 	return teams

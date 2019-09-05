@@ -12,6 +12,7 @@ const ListItem = styled(MuiListItem)`
 	&:nth-child(2n + 1) {
 		background-color: ${indigo[50]};
 	}
+	font-size: 1.1rem;
 `
 
 const TeamsContainer = styled.div`
@@ -21,7 +22,6 @@ const TeamsContainer = styled.div`
 	grid-column-gap: 2vw;
 	margin: 3rem;
 `
-const ListContainer = styled.div``
 const TeamHeading = styled.h3`
 	color: ${indigo[400]};
 	margin: 0;
@@ -30,7 +30,7 @@ const TeamHeading = styled.h3`
 const TeamList = ({ list, index }) => (
 	<div>
 		<TeamHeading>Team {index}</TeamHeading>
-		<List dense>
+		<List>
 			{list.map(listItem => (
 				<ListItem key={listItem.id}>{listItem.name}</ListItem>
 			))}
@@ -56,6 +56,6 @@ TeamDisplay.propTypes = {
 				id: PropTypes.string,
 			})
 		)
-	).isRequired,
+	),
 }
 export default TeamDisplay
