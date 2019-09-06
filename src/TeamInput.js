@@ -1,5 +1,10 @@
 import React, { useState } from 'react'
-import TextField from '@material-ui/core/TextField'
+import MuiTextField from '@material-ui/core/TextField'
+import styled from 'styled-components'
+
+const TextField = styled(MuiTextField)`
+	width: 80vw;
+`
 
 const TeamInput = ({ addToList }) => {
 	const [inputValue, setInputValue] = useState('')

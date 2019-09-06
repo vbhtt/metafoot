@@ -2,18 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
-import MuiList from '@material-ui/core/List'
-import MuiListItem from '@material-ui/core/ListItem'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
 
 import indigo from '@material-ui/core/colors/indigo'
-
-const List = styled(MuiList)``
-const ListItem = styled(MuiListItem)`
-	&:nth-child(2n + 1) {
-		background-color: ${indigo[50]};
-	}
-	font-size: 1.1rem;
-`
+import grey from '@material-ui/core/colors/grey'
+import { secondaryDark } from './common/colours'
 
 const TeamsContainer = styled.div`
 	display: grid;
@@ -23,19 +17,28 @@ const TeamsContainer = styled.div`
 	margin: 3rem;
 `
 const TeamHeading = styled.h3`
-	color: ${indigo[400]};
+	color: ${secondaryDark};
 	margin: 0;
+	font-weight: bolder;
+	padding-left: 16px;
+	font-size: 1.5rem;
+`
+const ListContainer = styled.div`
+	&:nth-child(2) {
+		border-left: 2px solid ${grey[100]};
+		padding-left: 12px;
+	}
 `
 
 const TeamList = ({ list, index }) => (
-	<div>
+	<ListContainer>
 		<TeamHeading>Team {index}</TeamHeading>
 		<List>
 			{list.map(listItem => (
 				<ListItem key={listItem.id}>{listItem.name}</ListItem>
 			))}
 		</List>
-	</div>
+	</ListContainer>
 )
 
 const TeamDisplay = ({ teams }) => {

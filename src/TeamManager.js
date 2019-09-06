@@ -29,6 +29,17 @@ const TeamManagerContainer = styled.div`
 	padding: 8px 0 16px;
 `
 
+const GenerateButton = styled(Button)`
+	&.MuiButtonBase-root {
+		position: fixed;
+		bottom: 0;
+		border-radius: 0;
+	}
+	&.MuiButton-sizeLarge {
+		padding: 12px 24px;
+	}
+`
+
 const TeamManager = () => {
 	const [list, addToList, removeFromList] = useList()
 	const [teams, setTeams] = useState(null)
@@ -43,7 +54,7 @@ const TeamManager = () => {
 					condensed={interactedSection !== 'memberList'}
 				/>
 			</div>
-			<Button
+			<GenerateButton
 				variant="contained"
 				color="primary"
 				disabled={list.length < 2}
@@ -51,9 +62,11 @@ const TeamManager = () => {
 					setInteracted('teamList')
 					setTeams(generateTeams(list))
 				}}
+				fullWidth
+				size="large"
 			>
 				Generate Teams
-			</Button>
+			</GenerateButton>
 			<TeamDisplay teams={teams} />
 		</TeamManagerContainer>
 	)
