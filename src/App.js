@@ -1,22 +1,32 @@
 import React from 'react'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles'
 
 import TeamManager from './TeamManager'
 
+const theme = createMuiTheme({
+	palette: {
+		primary: {
+			light: '#d36d72',
+			main: '#9e3f47',
+			dark: '#6b0d20',
+		},
+		secondary: {
+			light: '#dbffff',
+			main: '#a8d8ff',
+			dark: '#76a7cc',
+		},
+	},
+})
+
 function App() {
 	return (
-		<div className="App">
-			<AppBar position="static">
-				<Toolbar>
-					<Typography variant="h6">MetaFoot</Typography>
-				</Toolbar>
-			</AppBar>
-			<main>
-				<TeamManager></TeamManager>
-			</main>
-		</div>
+		<MuiThemeProvider theme={theme}>
+			<div className="App">
+				<main>
+					<TeamManager />
+				</main>
+			</div>
+		</MuiThemeProvider>
 	)
 }
 

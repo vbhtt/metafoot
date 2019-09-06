@@ -3,6 +3,8 @@ import Button from '@material-ui/core/Button'
 import styled from 'styled-components'
 import filter from 'lodash/filter'
 
+import { generateTeams } from './helpers'
+
 import TeamInput from './TeamInput'
 import MemberList from './MemberList'
 import TeamDisplay from './TeamDisplay'
@@ -20,42 +22,35 @@ const testList = [
 	{ name: 'Joseph' },
 ]
 
-const uuid = () =>
-	'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-		let r = (Math.random() * 16) | 0,
-			v = c === 'x' ? r : (r & 0x3) | 0x8
-		return v.toString(16)
-	})
-
-const generateTeams = teamMembers => {
-	let members = teamMembers.map(teamMember => ({
-		...teamMember,
-		id: uuid(),
-	}))
-	members = members.sort((a, b) => (a.id > b.id ? 1 : -1))
-	const mid = members.length / 2
-	const teams = [members.slice(0, mid), members.slice(mid, members.length)]
-	return teams
-}
-
 const TeamManagerContainer = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	padding: 8px 0 16px;
 `
 
 const TeamManager = () => {
 	const [list, addToList, removeFromList] = useList()
 	const [teams, setTeams] = useState(null)
+	const [interactedSection, setInteracted] = useState('memberList')
 	return (
 		<TeamManagerContainer>
-			<TeamInput addToList={addToList} />
-			<MemberList list={list} removeFromList={removeFromList} />
+			<div onClick={() => setInteracted('memberList')}>
+				<TeamInput addToList={addToList} />
+				<MemberList
+					list={list}
+					removeFromList={removeFromList}
+					condensed={interactedSection !== 'memberList'}
+				/>
+			</div>
 			<Button
 				variant="contained"
 				color="primary"
 				disabled={list.length < 2}
-				onClick={() => setTeams(generateTeams(list))}
+				onClick={() => {
+					setInteracted('teamList')
+					setTeams(generateTeams(list))
+				}}
 			>
 				Generate Teams
 			</Button>
@@ -67,7 +62,7 @@ const TeamManager = () => {
 const useList = () => {
 	const [list, setList] = useState(testList)
 	const addToList = item => {
-		setList([item, ...list])
+		setList([...item, ...list])
 	}
 	const removeFromList = name =>
 		setList(filter(list, item => item.name !== name))

@@ -7,23 +7,28 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItemText from '@material-ui/core/ListItemText'
 import IconButton from '@material-ui/core/IconButton'
 import CancelIcon from '@material-ui/icons/Cancel'
-import indigo from '@material-ui/core/colors/indigo'
+import grey from '@material-ui/core/colors/grey'
 
 const ListItem = styled(MuiListItem)`
-	background-color: ${indigo[50]};
-	margin: 1rem 0;
-	border-radius: 8px;
+	background-color: ${grey[50]};
+	margin: ${({ condensed }) => (condensed ? '0' : '8px')} 0;
+	border-radius: ${({ condensed }) => (condensed ? '0' : '8px')};
 `
 const List = styled(MuiList)`
 	width: 80vw;
 `
 
-const MemberList = ({ list, removeFromList }) => (
+const MemberList = ({ list, removeFromList, condensed }) => (
 	<>
-		<div>Players: {list.length}</div>
-		<List>
+		<div>
+			{list.length} player{list.length !== 1 && 's'}
+		</div>
+		<List dense={condensed}>
 			{list.map(listItem => (
-				<ListItem key={listItem.id ? listItem.id : listItem.name}>
+				<ListItem
+					key={listItem.id ? listItem.id : listItem.name}
+					condensed={condensed}
+				>
 					<ListItemText primary={listItem.name}></ListItemText>
 					<ListItemSecondaryAction>
 						<IconButton
