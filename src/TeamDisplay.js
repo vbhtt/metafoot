@@ -5,9 +5,10 @@ import styled from 'styled-components'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 
-import indigo from '@material-ui/core/colors/indigo'
 import grey from '@material-ui/core/colors/grey'
 import { secondaryDark } from './common/colours'
+
+import ShirtIcon from './ShirtIcon'
 
 const TeamsContainer = styled.div`
 	display: grid;
@@ -30,9 +31,21 @@ const ListContainer = styled.div`
 	}
 `
 
+const ColouredShirts = styled.div`
+	display: flex;
+	height: 48px;
+`
+
+const colours = [['black', '#E0E0E0'], ['#f44336', '#2196F3']]
+
 const TeamList = ({ list, index }) => (
 	<ListContainer>
-		<TeamHeading>Team {index}</TeamHeading>
+		<TeamHeading>Team {index + 1}</TeamHeading>
+		<ColouredShirts>
+			{colours[index].map(colour => (
+				<ShirtIcon colour={colour} />
+			))}
+		</ColouredShirts>
 		<List>
 			{list.map(listItem => (
 				<ListItem key={listItem.id}>{listItem.name}</ListItem>
@@ -46,7 +59,7 @@ const TeamDisplay = ({ teams }) => {
 	return (
 		<TeamsContainer>
 			{teams.map((team, index) => (
-				<TeamList list={team} key={index} index={index + 1} />
+				<TeamList list={team} key={index} index={index} />
 			))}
 		</TeamsContainer>
 	)

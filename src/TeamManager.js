@@ -3,24 +3,24 @@ import Button from '@material-ui/core/Button'
 import styled from 'styled-components'
 import filter from 'lodash/filter'
 
-import { generateTeams } from './helpers'
+import { generateTeams, uuid } from './common/helpers'
 
 import TeamInput from './TeamInput'
 import MemberList from './MemberList'
 import TeamDisplay from './TeamDisplay'
 
 const testList = [
-	{ name: 'Pecky' },
-	{ name: 'Rajesh' },
-	{ name: 'David' },
-	{ name: 'Varun' },
-	{ name: 'Sumedh' },
-	{ name: 'Abel' },
-	{ name: 'Rohith' },
-	{ name: 'Rawson' },
-	{ name: 'Asaph' },
-	{ name: 'Joseph' },
-]
+	'Pecky',
+	'Rajesh',
+	'David',
+	'Varun',
+	'Sumedh',
+	'Abel',
+	'Rohith',
+	'Rawson',
+	'Asaph',
+	'Joseph',
+].map(name => ({ name, position: 'ANY', id: uuid() }))
 
 const TeamManagerContainer = styled.div`
 	display: flex;
@@ -34,6 +34,7 @@ const GenerateButton = styled(Button)`
 		position: fixed;
 		bottom: 0;
 		border-radius: 0;
+		z-index: 3;
 	}
 	&.MuiButton-sizeLarge {
 		padding: 12px 24px;
@@ -41,17 +42,16 @@ const GenerateButton = styled(Button)`
 `
 
 const TeamManager = () => {
-	const [list, addToList, removeFromList] = useList()
+	const [list, addToList, removeFromList, updateListItemById] = useList()
 	const [teams, setTeams] = useState(null)
-	const [interactedSection, setInteracted] = useState('memberList')
 	return (
 		<TeamManagerContainer>
-			<div onClick={() => setInteracted('memberList')}>
+			<div>
 				<TeamInput addToList={addToList} />
 				<MemberList
 					list={list}
 					removeFromList={removeFromList}
-					condensed={interactedSection !== 'memberList'}
+					updateListItem={(id, data) => updateListItemById(id, data)}
 				/>
 			</div>
 			<GenerateButton
@@ -59,7 +59,6 @@ const TeamManager = () => {
 				color="primary"
 				disabled={list.length < 2}
 				onClick={() => {
-					setInteracted('teamList')
 					setTeams(generateTeams(list))
 				}}
 				fullWidth
@@ -77,9 +76,20 @@ const useList = () => {
 	const addToList = item => {
 		setList([...item, ...list])
 	}
+
 	const removeFromList = name =>
 		setList(filter(list, item => item.name !== name))
-	return [list, addToList, removeFromList]
+
+	const updateListItemById = (id, data) => {
+		const index = list.findIndex(obj => obj.id === id)
+		const newList = [
+			...list.slice(0, index),
+			Object.assign({}, list[index], data),
+			...list.slice(index + 1),
+		]
+		setList(newList)
+	}
+	return [list, addToList, removeFromList, updateListItemById]
 }
 
 export default TeamManager

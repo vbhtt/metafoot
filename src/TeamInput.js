@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import MuiTextField from '@material-ui/core/TextField'
 import styled from 'styled-components'
+import { uuid } from './common/helpers'
 
 const TextField = styled(MuiTextField)`
 	width: 80vw;
@@ -18,7 +19,7 @@ const TeamInput = ({ addToList }) => {
 		names = names.map(name => {
 			const nameRegex = /[a-zA-Z*\s]+/
 			name = name.match(nameRegex)[0]
-			return { name }
+			return { name, position: 'ANY', id: uuid() }
 		})
 		addToList(names)
 	}
@@ -27,7 +28,9 @@ const TeamInput = ({ addToList }) => {
 			onSubmit={e => {
 				e.preventDefault()
 				if (inputValue) {
-					addToList([{ name: inputValue }])
+					addToList([
+						{ name: inputValue, position: 'ANY', id: uuid() },
+					])
 					setInputValue('')
 				}
 			}}
