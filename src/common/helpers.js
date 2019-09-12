@@ -1,3 +1,4 @@
+import { positions } from './data'
 export const uuid = () =>
 	'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
 		let r = (Math.random() * 16) | 0,
@@ -10,12 +11,32 @@ export const uuid = () =>
  * @param {array} teamMembers array of team member objects
  */
 export const generateTeams = teamMembers => {
+	let teams = [[], []]
+	const extras = []
 	let members = teamMembers.map(teamMember => ({
 		...teamMember,
 		id: uuid(),
 	}))
 	members = members.sort((a, b) => (a.id > b.id ? 1 : -1))
-	const mid = members.length / 2
-	const teams = [members.slice(0, mid), members.slice(mid, members.length)]
+	positions.forEach(({ position }) => {
+		let positionedPlayers = members.filter(
+			member => member.position === position
+		)
+		if (positionedPlayers.length % 2 === 1) {
+			extras.push(positionedPlayers[positionedPlayers.length - 1])
+			positionedPlayers = positionedPlayers.slice(
+				0,
+				positionedPlayers.length - 1
+			)
+		}
+		positionedPlayers.forEach((player, index) => {
+			teams[index % 2].push(player)
+		})
+	})
+	if (extras.length > 0) {
+		extras.forEach((player, index) => {
+			teams[index % 2].push(player)
+		})
+	}
 	return teams
 }
