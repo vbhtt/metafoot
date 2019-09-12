@@ -72,7 +72,7 @@ const TeamManager = () => {
 }
 
 const useList = () => {
-	const [list, setList] = useState(testList)
+	const [list, setList] = useState([])
 	const addToList = item => {
 		setList([...item, ...list])
 	}

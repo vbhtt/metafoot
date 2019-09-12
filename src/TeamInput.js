@@ -10,14 +10,15 @@ const TextField = styled(MuiTextField)`
 const TeamInput = ({ addToList }) => {
 	const [inputValue, setInputValue] = useState('')
 	const handlePaste = e => {
-		const listNameRegex = /^\d{1,2}. [a-zA-Z*\s]+$/gm
+		const listNameRegex = /^\d{1,2}. [a-zA-Z* ]+$/gm
 		const data = e.clipboardData.getData('text')
 		let names = data.match(listNameRegex)
+		console.log(data, names)
 		if (!names || names.length < 1) return
 		e.preventDefault()
 		e.stopPropagation()
 		names = names.map(name => {
-			const nameRegex = /[a-zA-Z*\s]+/
+			const nameRegex = /[a-zA-Z]+/g
 			name = name.match(nameRegex)[0]
 			return { name, position: 'ANY', id: uuid() }
 		})

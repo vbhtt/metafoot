@@ -7,6 +7,7 @@ import ListItem from '@material-ui/core/ListItem'
 
 import grey from '@material-ui/core/colors/grey'
 import { secondaryDark } from './common/colours'
+import { positions } from './common/data'
 
 import ShirtIcon from './ShirtIcon'
 
@@ -36,6 +37,14 @@ const ColouredShirts = styled.div`
 	height: 48px;
 `
 
+const PositionDot = styled.div`
+	width: 10px;
+	height: 10px;
+	border-radius: 5px;
+	background-color: ${({ colour }) => colour};
+	margin-right: 5px;
+`
+
 const colours = [['black', '#E0E0E0'], ['#f44336', '#2196F3']]
 
 const TeamList = ({ list, index }) => (
@@ -47,9 +56,17 @@ const TeamList = ({ list, index }) => (
 			))}
 		</ColouredShirts>
 		<List>
-			{list.map(listItem => (
-				<ListItem key={listItem.id}>{listItem.name}</ListItem>
-			))}
+			{list.map(listItem => {
+				const colour = positions.find(
+					({ position }) => position === listItem.position
+				).colour
+				return (
+					<ListItem key={listItem.id}>
+						<PositionDot colour={colour} />
+						{listItem.name}
+					</ListItem>
+				)
+			})}
 		</List>
 	</ListContainer>
 )

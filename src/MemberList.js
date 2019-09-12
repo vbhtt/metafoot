@@ -35,15 +35,23 @@ const SecondaryActions = styled(ListItemSecondaryAction)`
 	display: flex;
 	align-items: center;
 	> * {
-		margin: 4px;
+		margin: 2px;
 	}
+`
+const ListHeader = styled.div`
+	display: flex;
+	justify-content: space-between;
+	padding: 8px 52px 2px 16px;
 `
 
 const MemberList = ({ list, removeFromList, updateListItem }) => (
 	<>
-		<div>
-			{list.length} player{list.length !== 1 && 's'}
-		</div>
+		<ListHeader>
+			<div>
+				{list.length} player{list.length !== 1 && 's'}
+			</div>
+			<div>Position</div>
+		</ListHeader>
 		<List>
 			{list.map(listItem => (
 				<ListItem key={listItem.id}>
