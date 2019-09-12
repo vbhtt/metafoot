@@ -49,6 +49,13 @@ const PositionDot = styled.div`
 `
 
 const colours = [['black', '#E0E0E0'], ['#f44336', '#2196F3']]
+const positionSorting = {
+	GK: 0,
+	DEF: 1,
+	MID: 2,
+	FWD: 3,
+	ANY: 4,
+}
 
 const TeamList = ({ list, index }) => (
 	<ListContainer>
@@ -59,17 +66,23 @@ const TeamList = ({ list, index }) => (
 			))}
 		</ColouredShirts>
 		<List>
-			{list.map(listItem => {
-				const colour = positions.find(
-					({ position }) => position === listItem.position
-				).colour
-				return (
-					<ListItem key={listItem.id}>
-						<PositionDot colour={colour} />
-						{listItem.name}
-					</ListItem>
+			{list
+				.sort(
+					(a, b) =>
+						positionSorting[a.position] -
+						positionSorting[b.position]
 				)
-			})}
+				.map(listItem => {
+					const colour = positions.find(
+						({ position }) => position === listItem.position
+					).colour
+					return (
+						<ListItem key={listItem.id}>
+							<PositionDot colour={colour} />
+							{listItem.name}
+						</ListItem>
+					)
+				})}
 		</List>
 	</ListContainer>
 )
