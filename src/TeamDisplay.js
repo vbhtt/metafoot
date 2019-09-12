@@ -35,6 +35,9 @@ const ListContainer = styled.div`
 const ColouredShirts = styled.div`
 	display: flex;
 	height: 48px;
+	svg {
+		width: 48px;
+	}
 `
 
 const PositionDot = styled.div`

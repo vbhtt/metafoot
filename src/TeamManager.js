@@ -26,7 +26,7 @@ const TeamManagerContainer = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	padding: 8px 0 16px;
+	padding: 8px 0 64px;
 `
 
 const GenerateButton = styled(Button)`
@@ -72,7 +72,7 @@ const TeamManager = () => {
 }
 
 const useList = () => {
-	const [list, setList] = useState([])
+	const [list, setList] = useState(testList)
 	const addToList = item => {
 		setList([...item, ...list])
 	}
