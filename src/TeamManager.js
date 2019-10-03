@@ -42,7 +42,9 @@ const GenerateButton = styled(Button)`
 `
 
 const TeamManager = () => {
-	const [list, addToList, removeFromList, updateListItemById] = useList()
+	const { list, addToList, removeFromList, updateListItemById } = useList(
+		testList
+	)
 	const [teams, setTeams] = useState(null)
 	return (
 		<TeamManagerContainer>
@@ -66,13 +68,13 @@ const TeamManager = () => {
 			>
 				Generate Teams
 			</GenerateButton>
-			<TeamDisplay teams={teams} />
+			<TeamDisplay teams={teams} setTeams={setTeams} />
 		</TeamManagerContainer>
 	)
 }
 
-const useList = () => {
-	const [list, setList] = useState(testList)
+const useList = initialList => {
+	const [list, setList] = useState(initialList)
 	const addToList = item => {
 		setList([...item, ...list])
 	}
@@ -89,7 +91,7 @@ const useList = () => {
 		]
 		setList(newList)
 	}
-	return [list, addToList, removeFromList, updateListItemById]
+	return { list, addToList, removeFromList, updateListItemById }
 }
 
 export default TeamManager
