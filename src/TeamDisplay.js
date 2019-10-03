@@ -161,6 +161,7 @@ TeamDisplay.propTypes = {
 			PropTypes.shape({
 				name: PropTypes.string,
 				id: PropTypes.string,
+				position: PropTypes.string,
 			})
 		)
 	),
