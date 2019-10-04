@@ -9,7 +9,7 @@ import List from '@material-ui/core/List'
 import MuiListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
-import SwapIcon from '@material-ui/icons/SwapHoriz'
+import MuiSwapIcon from '@material-ui/icons/SwapHoriz'
 
 import grey from '@material-ui/core/colors/grey'
 import green from '@material-ui/core/colors/green'
@@ -69,9 +69,10 @@ const ListItem = styled(MuiListItem)`
 			border: 1px solid black;
 			border-radius: 4px;
 		`}
-	.MuiSvgIcon-root {
-		fill: ${green[500]};
-	}
+`
+
+const SwapIcon = styled(MuiSwapIcon)`
+	color: ${({ highlighted }) => (highlighted ? green[800] : grey[400])};
 `
 
 const colours = [['black', '#E0E0E0'], ['#f44336', '#2196F3']]
@@ -127,10 +128,8 @@ const TeamList = ({ list, index, selectedPlayers, changeSelectedPlayer }) => {
 									}
 								>
 									<SwapIcon
-										color={
+										highlighted={
 											isOtherSelected || isSelected
-												? 'action'
-												: 'disabled'
 										}
 									/>
 								</ListItemSecondaryAction>
