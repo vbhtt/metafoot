@@ -26,7 +26,7 @@ const TeamManagerContainer = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	padding: 8px 0 16px;
+	padding: 8px 0 64px;
 `
 
 const GenerateButton = styled(Button)`
@@ -42,7 +42,7 @@ const GenerateButton = styled(Button)`
 `
 
 const TeamManager = () => {
-	const [list, addToList, removeFromList, updateListItemById] = useList()
+	const { list, addToList, removeFromList, updateListItemById } = useList([])
 	const [teams, setTeams] = useState(null)
 	return (
 		<TeamManagerContainer>
@@ -66,20 +66,34 @@ const TeamManager = () => {
 			>
 				Generate Teams
 			</GenerateButton>
-			<TeamDisplay teams={teams} />
+			<TeamDisplay teams={teams} setTeams={setTeams} />
 		</TeamManagerContainer>
 	)
 }
 
-const useList = () => {
-	const [list, setList] = useState(testList)
+const useList = initialList => {
+	const [list, setList] = useState(initialList)
+
+	/**
+	 * Adds an item to the start of the list
+	 * @param {Object} item The item object to add to the list
+	 */
 	const addToList = item => {
 		setList([...item, ...list])
 	}
 
+	/**
+	 * Removes an item from the list by name
+	 * @param {string} name The `name` of the item to remove from the list
+	 */
 	const removeFromList = name =>
 		setList(filter(list, item => item.name !== name))
 
+	/**
+	 * Updates a list item by id
+	 * @param {string} id The id of the list item to update
+	 * @param {object} data The new updated list item object
+	 */
 	const updateListItemById = (id, data) => {
 		const index = list.findIndex(obj => obj.id === id)
 		const newList = [
@@ -89,7 +103,7 @@ const useList = () => {
 		]
 		setList(newList)
 	}
-	return [list, addToList, removeFromList, updateListItemById]
+	return { list, addToList, removeFromList, updateListItemById }
 }
 
 export default TeamManager

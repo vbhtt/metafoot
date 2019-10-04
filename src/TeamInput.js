@@ -9,20 +9,26 @@ const TextField = styled(MuiTextField)`
 
 const TeamInput = ({ addToList }) => {
 	const [inputValue, setInputValue] = useState('')
+
 	const handlePaste = e => {
-		const listNameRegex = /^\d{1,2}. [a-zA-Z*\s]+$/gm
+		/* e.g. 4. Player Name */
+		const listNameRegex = /^\d{1,2}. [a-zA-Z* ]+$/gm
 		const data = e.clipboardData.getData('text')
 		let names = data.match(listNameRegex)
+
+		/* Allow normal pasting if pasted data doesn't match the format */
 		if (!names || names.length < 1) return
+
 		e.preventDefault()
 		e.stopPropagation()
 		names = names.map(name => {
-			const nameRegex = /[a-zA-Z*\s]+/
+			const nameRegex = /[a-zA-Z]+/g
 			name = name.match(nameRegex)[0]
 			return { name, position: 'ANY', id: uuid() }
 		})
 		addToList(names)
 	}
+
 	return (
 		<form
 			onSubmit={e => {

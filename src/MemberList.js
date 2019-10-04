@@ -8,6 +8,8 @@ import ListItemText from '@material-ui/core/ListItemText'
 import IconButton from '@material-ui/core/IconButton'
 import CancelIcon from '@material-ui/icons/Cancel'
 
+import { positions } from './common/data'
+
 const List = styled(MuiList)`
 	width: 95vw;
 	@media (min-width: 880px) {
@@ -19,8 +21,9 @@ const PositionIndicator = styled.div`
 	width: 40px;
 	border-radius: 8px;
 	font-size: 1rem;
-	border: 1px solid ${({ colour }) => colour};
-	color: ${({ colour, isSelected }) => (isSelected ? 'white' : colour)};
+	border: 1px solid
+		${({ colour, isSelected }) => (isSelected ? colour : '#909090')};
+	color: ${({ isSelected }) => (isSelected ? 'white' : '#909090')};
 	background-color: ${({ colour, isSelected }) =>
 		isSelected ? colour : 'white'};
 	display: flex;
@@ -32,22 +35,23 @@ const SecondaryActions = styled(ListItemSecondaryAction)`
 	display: flex;
 	align-items: center;
 	> * {
-		margin: 4px;
+		margin: 2px;
 	}
 `
-
-const positions = [
-	{ position: 'GK', colour: '#FF8F00' },
-	{ position: 'DEF', colour: '#F9A825' },
-	{ position: 'MID', colour: '#4CAF50' },
-	{ position: 'FWD', colour: '#2196F3' },
-]
+const ListHeader = styled.div`
+	display: flex;
+	justify-content: space-between;
+	padding: 8px 52px 2px 16px;
+`
 
 const MemberList = ({ list, removeFromList, updateListItem }) => (
 	<>
-		<div>
-			{list.length} player{list.length !== 1 && 's'}
-		</div>
+		<ListHeader>
+			<div>
+				{list.length} player{list.length !== 1 && 's'}
+			</div>
+			<div>Position</div>
+		</ListHeader>
 		<List>
 			{list.map(listItem => (
 				<ListItem key={listItem.id}>
