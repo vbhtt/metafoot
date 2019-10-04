@@ -7,8 +7,12 @@ import remove from 'lodash/remove'
 
 import List from '@material-ui/core/List'
 import MuiListItem from '@material-ui/core/ListItem'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
+import SwapIcon from '@material-ui/icons/SwapHoriz'
 
 import grey from '@material-ui/core/colors/grey'
+import green from '@material-ui/core/colors/green'
 import { secondaryDark } from './common/colours'
 import { positions } from './common/data'
 
@@ -48,16 +52,26 @@ const PositionDot = styled.div`
 	height: 10px;
 	border-radius: 5px;
 	background-color: ${({ colour }) => colour};
-	margin-right: 5px;
 `
 
 const ListItem = styled(MuiListItem)`
+	.MuiListItemIcon-root {
+		width: 10px;
+		min-width: 0;
+		margin-right: 8px;
+	}
+	cursor: pointer;
+	height: 50px;
+	font-size: 1.1rem;
 	${({ isSelected }) =>
 		isSelected &&
 		`
 			border: 1px solid black;
 			border-radius: 4px;
 		`}
+	.MuiSvgIcon-root {
+		fill: ${green[500]};
+	}
 `
 
 const colours = [['black', '#E0E0E0'], ['#f44336', '#2196F3']]
@@ -69,46 +83,71 @@ const positionSorting = {
 	ANY: 4,
 }
 
-const TeamList = ({ list, index, selectedPlayers, changeSelectedPlayer }) => (
-	<ListContainer>
-		<TeamHeading>Team {index + 1}</TeamHeading>
-		<ColouredShirts>
-			{colours[index].map(colour => (
-				<ShirtIcon colour={colour} key={colour} />
-			))}
-		</ColouredShirts>
-		<List>
-			{list
-				.sort(
-					(a, b) =>
-						positionSorting[a.position] -
-						positionSorting[b.position]
-				)
-				.map(listItem => {
-					const colour = positions.find(
-						({ position }) => position === listItem.position
-					).colour
-					return (
-						<ListItem
-							key={listItem.id}
-							onClick={() =>
-								changeSelectedPlayer(listItem, index)
-							}
-							isSelected={
-								selectedPlayers[index].id === listItem.id
-							}
-						>
-							<PositionDot colour={colour} />
-							{listItem.name}
-						</ListItem>
+const TeamList = ({ list, index, selectedPlayers, changeSelectedPlayer }) => {
+	const length = 2
+	const otherIndex = (index + 1) % length
+	const isOtherSelected = !isEmpty(selectedPlayers[otherIndex])
+	return (
+		<ListContainer>
+			<TeamHeading>Team {index + 1}</TeamHeading>
+			<ColouredShirts>
+				{colours[index].map(colour => (
+					<ShirtIcon colour={colour} key={colour} />
+				))}
+			</ColouredShirts>
+			<List>
+				{list
+					.sort(
+						(a, b) =>
+							positionSorting[a.position] -
+							positionSorting[b.position]
 					)
-				})}
-		</List>
-	</ListContainer>
-)
+					.map(listItem => {
+						const colour = positions.find(
+							({ position }) => position === listItem.position
+						).colour
+						const isSelected =
+							selectedPlayers[index].id === listItem.id
+						return (
+							<ListItem
+								key={listItem.id}
+								onClick={() =>
+									changeSelectedPlayer(listItem, index)
+								}
+								isSelected={isSelected}
+							>
+								<ListItemIcon>
+									<PositionDot colour={colour} />
+								</ListItemIcon>
+								{listItem.name}
+
+								<ListItemSecondaryAction
+									onClick={() =>
+										changeSelectedPlayer(listItem, index)
+									}
+								>
+									<SwapIcon
+										color={
+											isOtherSelected || isSelected
+												? 'action'
+												: 'disabled'
+										}
+									/>
+								</ListItemSecondaryAction>
+							</ListItem>
+						)
+					})}
+			</List>
+		</ListContainer>
+	)
+}
 
 const TeamDisplay = ({ teams, setTeams }) => {
-	const { selectedPlayers, changeSelectedPlayer } = usePlayerSelection()
+	const {
+		selectedPlayers,
+		changeSelectedPlayer,
+		resetSelectedPlayers,
+	} = usePlayerSelection()
 
 	if (!isEmpty(selectedPlayers[0]) && !isEmpty(selectedPlayers[1])) {
 		const _t0 = teams[0],
@@ -121,8 +160,7 @@ const TeamDisplay = ({ teams, setTeams }) => {
 		_t1.push(selectedPlayers[0])
 
 		setTeams([_t0, _t1])
-		changeSelectedPlayer({}, 0)
-		changeSelectedPlayer({}, 1)
+		resetSelectedPlayers()
 	}
 
 	if (!teams || teams.length < 1) return null
@@ -142,17 +180,31 @@ const TeamDisplay = ({ teams, setTeams }) => {
 }
 
 const usePlayerSelection = () => {
-	const [selectedPlayers, setSelectedPlayers] = useState({ 0: {}, 1: {} })
+	const initialState = { 0: {}, 1: {} }
+	const [selectedPlayers, setSelectedPlayers] = useState(initialState)
+
+	/**
+	 * Marks a player as selected
+	 * @param {object} player The player object to mark as selected
+	 * @param {number} teamIndex The team the player is in
+	 */
 	const changeSelectedPlayer = (player, teamIndex) => {
-		if (isEqual(selectedPlayers[teamIndex], player))
+		if (isEqual(selectedPlayers[teamIndex], player)) {
+			/* Player is already selected, deselect them */
 			setSelectedPlayers({ ...selectedPlayers, [teamIndex]: {} })
-		else
+		} else {
 			setSelectedPlayers({
 				...selectedPlayers,
 				[teamIndex]: player,
 			})
+		}
 	}
-	return { selectedPlayers, changeSelectedPlayer }
+
+	/**
+	 * Resets the selected players to a blank state
+	 */
+	const resetSelectedPlayers = () => setSelectedPlayers(initialState)
+	return { selectedPlayers, changeSelectedPlayer, resetSelectedPlayers }
 }
 
 TeamDisplay.propTypes = {
