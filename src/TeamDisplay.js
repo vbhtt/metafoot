@@ -72,7 +72,7 @@ const ListItem = styled(MuiListItem)`
 `
 
 const SwapIcon = styled(MuiSwapIcon)`
-	color: ${({ highlighted }) => (highlighted ? green[800] : grey[400])};
+	color: ${({ isHighlighted }) => (isHighlighted ? green[800] : grey[400])};
 `
 
 const colours = [['black', '#E0E0E0'], ['#f44336', '#2196F3']]
@@ -128,7 +128,7 @@ const TeamList = ({ list, index, selectedPlayers, changeSelectedPlayer }) => {
 									}
 								>
 									<SwapIcon
-										highlighted={
+										isHighlighted={
 											isOtherSelected || isSelected
 										}
 									/>

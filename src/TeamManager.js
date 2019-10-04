@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Button from '@material-ui/core/Button'
 import styled from 'styled-components'
 import filter from 'lodash/filter'
@@ -44,6 +44,15 @@ const GenerateButton = styled(Button)`
 const TeamManager = () => {
 	const { list, addToList, removeFromList, updateListItemById } = useList([])
 	const [teams, setTeams] = useState(null)
+
+	/**
+	 * Scroll to the bottom of the screen when teams are updated
+	 * TODO: improve this logic
+	 */
+	useEffect(() => {
+		window.scrollBy(0, window.innerHeight)
+	}, [teams])
+
 	return (
 		<TeamManagerContainer>
 			<div>
@@ -54,6 +63,7 @@ const TeamManager = () => {
 					updateListItem={(id, data) => updateListItemById(id, data)}
 				/>
 			</div>
+
 			<GenerateButton
 				variant="contained"
 				color="primary"
@@ -66,6 +76,7 @@ const TeamManager = () => {
 			>
 				Generate Teams
 			</GenerateButton>
+
 			<TeamDisplay teams={teams} setTeams={setTeams} />
 		</TeamManagerContainer>
 	)
