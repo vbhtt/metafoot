@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 import MuiTextField from '@material-ui/core/TextField'
 import styled from 'styled-components'
 import { uuid } from './common/helpers'
@@ -40,6 +41,7 @@ const TeamInput = ({ addToList }) => {
 					setInputValue('')
 				}
 			}}
+			data-testid="team-input"
 		>
 			<TextField
 				id="filled-name"
@@ -53,4 +55,10 @@ const TeamInput = ({ addToList }) => {
 		</form>
 	)
 }
+
+TeamInput.propTypes = {
+	/* Function to add the input text to the list */
+	addToList: PropTypes.func,
+}
+
 export default TeamInput
