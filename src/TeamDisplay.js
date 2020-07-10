@@ -17,6 +17,7 @@ import { secondaryDark } from './common/colours'
 import { positions } from './common/data'
 
 import ShirtIcon from './ShirtIcon'
+import { Button } from '@material-ui/core'
 
 const TeamsContainer = styled.div`
 	display: grid;
@@ -165,19 +166,34 @@ const TeamDisplay = ({ teams, setTeams }) => {
 		resetSelectedPlayers()
 	}
 
+	const handleClick = () => {
+		let sharedTeams = ''
+		if (navigator.share) {
+			for (let team in teams) {
+				sharedTeams += `\nTeam ${parseInt(team) + 1}\n`
+				sharedTeams = teams[team].reduce((a, value) => {
+					return a + value.name + '\n'
+				}, sharedTeams)
+			}
+			navigator.share({ text: sharedTeams })
+		}
+	}
+
 	if (!teams || teams.length < 1) return null
 	return (
-		<TeamsContainer>
-			{teams.map((team, index) => (
-				<TeamList
-					list={team}
-					key={index}
-					index={index}
-					changeSelectedPlayer={changeSelectedPlayer}
-					selectedPlayers={selectedPlayers}
-				/>
-			))}
-		</TeamsContainer>
+		<div>
+			<TeamsContainer>
+				{teams.map((team, index) => (
+					<TeamList
+						list={team}
+						key={index}
+						index={index}
+						changeSelectedPlayer={changeSelectedPlayer}
+						selectedPlayers={selectedPlayers}
+					/>
+				))}
+			</TeamsContainer>
+		</div>
 	)
 }
 
