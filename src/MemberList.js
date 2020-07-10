@@ -43,7 +43,7 @@ const ListHeader = styled.div`
 	justify-content: space-between;
 	padding: 8px 52px 2px 16px;
 `
-
+/** Component to show the list of all players */
 const MemberList = ({ list, removeFromList, updateListItem }) => (
 	<>
 		<ListHeader>

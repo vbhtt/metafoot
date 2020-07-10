@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const ShirtIcon = ({ colour, strokeColour }) => (
+const ShirtIcon = ({ colour }) => (
 	<svg
 		data-name="Layer 1"
 		id="Layer_1"

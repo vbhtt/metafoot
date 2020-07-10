@@ -63,16 +63,17 @@ const ListItem = styled(MuiListItem)`
 	cursor: pointer;
 	height: 50px;
 	font-size: 1.1rem;
-	${({ isSelected }) =>
-		isSelected &&
-		`
-			border: 1px solid black;
-			border-radius: 4px;
-		`}
+	.MuiListItemIcon-root.selected {
+		border: 1px solid black;
+		border-radius: 4px;
+	}
 `
 
 const SwapIcon = styled(MuiSwapIcon)`
-	color: ${({ isHighlighted }) => (isHighlighted ? green[800] : grey[400])};
+	color: ${grey[400]};
+	&.highlighted {
+		color: ${green[800]};
+	}
 `
 
 const colours = [['black', '#E0E0E0'], ['#f44336', '#2196F3']]
@@ -91,11 +92,11 @@ const TeamList = ({ list, index, selectedPlayers, changeSelectedPlayer }) => {
 	return (
 		<ListContainer>
 			<TeamHeading>Team {index + 1}</TeamHeading>
-			<ColouredShirts>
+			{/* <ColouredShirts>
 				{colours[index].map(colour => (
 					<ShirtIcon colour={colour} key={colour} />
 				))}
-			</ColouredShirts>
+			</ColouredShirts> */}
 			<List>
 				{list
 					.sort(
@@ -115,7 +116,7 @@ const TeamList = ({ list, index, selectedPlayers, changeSelectedPlayer }) => {
 								onClick={() =>
 									changeSelectedPlayer(listItem, index)
 								}
-								isSelected={isSelected}
+								className={isSelected ? 'selected' : ''}
 							>
 								<ListItemIcon>
 									<PositionDot colour={colour} />
@@ -128,8 +129,10 @@ const TeamList = ({ list, index, selectedPlayers, changeSelectedPlayer }) => {
 									}
 								>
 									<SwapIcon
-										isHighlighted={
+										className={
 											isOtherSelected || isSelected
+												? 'highlighted'
+												: ''
 										}
 									/>
 								</ListItemSecondaryAction>

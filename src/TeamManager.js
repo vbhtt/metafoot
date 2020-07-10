@@ -42,7 +42,11 @@ const GenerateButton = styled(Button)`
 `
 
 const TeamManager = () => {
-	const { list, addToList, removeFromList, updateListItemById } = useList([])
+	const initialList =
+		process.env.REACT_APP_USE_TEST_LIST === 'true' ? testList : []
+	const { list, addToList, removeFromList, updateListItemById } = useList(
+		initialList
+	)
 	const [teams, setTeams] = useState(null)
 
 	/**
