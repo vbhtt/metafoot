@@ -16,15 +16,14 @@ import green from '@material-ui/core/colors/green'
 import { secondaryDark } from './common/colours'
 import { positions } from './common/data'
 
-import ShirtIcon from './ShirtIcon'
+import ShareIcon from '@material-ui/icons/Share'
 import { Button } from '@material-ui/core'
 
-const TeamsContainer = styled.div`
+const TeamsListContainer = styled.div`
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	width: 90vw;
 	grid-column-gap: 2vw;
-	margin: 3rem;
 `
 const TeamHeading = styled.h3`
 	color: ${secondaryDark};
@@ -74,6 +73,13 @@ const SwapIcon = styled(MuiSwapIcon)`
 	color: ${grey[400]};
 	&.highlighted {
 		color: ${green[800]};
+	}
+`
+const TeamsContainer = styled.div`
+	margin: 3rem 0;
+	#share-teams {
+		display: flex;
+		justify-content: center;
 	}
 `
 
@@ -166,7 +172,7 @@ const TeamDisplay = ({ teams, setTeams }) => {
 		resetSelectedPlayers()
 	}
 
-	const handleClick = () => {
+	const handleShareTeams = () => {
 		let sharedTeams = ''
 		if (navigator.share) {
 			for (let team in teams) {
@@ -181,8 +187,8 @@ const TeamDisplay = ({ teams, setTeams }) => {
 
 	if (!teams || teams.length < 1) return null
 	return (
-		<div>
-			<TeamsContainer>
+		<TeamsContainer>
+			<TeamsListContainer>
 				{teams.map((team, index) => (
 					<TeamList
 						list={team}
@@ -192,8 +198,15 @@ const TeamDisplay = ({ teams, setTeams }) => {
 						selectedPlayers={selectedPlayers}
 					/>
 				))}
-			</TeamsContainer>
-		</div>
+			</TeamsListContainer>
+			{navigator.share && (
+				<div id="share-teams">
+					<Button endIcon={<ShareIcon />} onClick={handleShareTeams}>
+						Share
+					</Button>
+				</div>
+			)}
+		</TeamsContainer>
 	)
 }
 
