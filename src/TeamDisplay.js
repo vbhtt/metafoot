@@ -248,5 +248,6 @@ TeamDisplay.propTypes = {
 			})
 		)
 	),
+	setTeams: PropTypes.func,
 }
 export default TeamDisplay

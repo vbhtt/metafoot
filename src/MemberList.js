@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
 import MuiList from '@material-ui/core/List'
@@ -6,7 +6,13 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItemText from '@material-ui/core/ListItemText'
 import IconButton from '@material-ui/core/IconButton'
-import CancelIcon from '@material-ui/icons/Cancel'
+import Button from '@material-ui/core/Button'
+import TextField from '@material-ui/core/TextField'
+import ClickAwayListener from '@material-ui/core/ClickAwayListener'
+
+import CancelIcon from '@material-ui/icons/Delete'
+import EditIcon from '@material-ui/icons/Edit'
+import DoneIcon from '@material-ui/icons/Check'
 
 import { positions } from './common/data'
 
@@ -14,6 +20,10 @@ const List = styled(MuiList)`
 	width: 95vw;
 	@media (min-width: 880px) {
 		width: 500px;
+	}
+	.MuiOutlinedInput-input {
+		padding: 6px 8px;
+		max-width: 40vw;
 	}
 `
 const PositionIndicator = styled.div`
@@ -44,42 +54,101 @@ const ListHeader = styled.div`
 	padding: 8px 52px 2px 16px;
 `
 /** Component to show the list of all players */
-const MemberList = ({ list, removeFromList, updateListItem }) => (
-	<>
-		<ListHeader>
-			<div>
-				{list.length} player{list.length !== 1 && 's'}
-			</div>
-			<div>Position</div>
-		</ListHeader>
-		<List>
-			{list.map(listItem => (
-				<ListItem key={listItem.id}>
-					<ListItemText primary={listItem.name}></ListItemText>
-					<SecondaryActions>
-						{positions.map(({ position, colour }) => (
-							<PositionIndicator
-								colour={colour}
-								key={position}
-								onClick={() =>
-									updateListItem(listItem.id, { position })
-								}
-								isSelected={listItem.position === position}
-							>
-								{position}
-							</PositionIndicator>
-						))}
-						<IconButton
-							edge="end"
-							aria-label="Remove Player"
-							onClick={() => removeFromList(listItem.name)}
-						>
-							<CancelIcon />
-						</IconButton>
-					</SecondaryActions>
-				</ListItem>
-			))}
-		</List>
-	</>
-)
+const MemberList = ({ list, removeFromList, updateListItem }) => {
+	const [editing, setEditing] = useState(null)
+	return (
+		<>
+			<ListHeader>
+				<div>
+					{list.length} player{list.length !== 1 && 's'}
+				</div>
+				<div>Position</div>
+			</ListHeader>
+			<List>
+				{list.map(listItem => (
+					<ListItem key={listItem.id}>
+						{editing === listItem.id ? (
+							<ListItemText>
+								<form
+									onSubmit={e => {
+										e.preventDefault()
+										setEditing(null)
+									}}
+								>
+									<TextField
+										value={listItem.name}
+										variant="outlined"
+										onChange={e => {
+											updateListItem(listItem.id, {
+												name: e.target.value,
+											})
+										}}
+										autoFocus={true}
+									/>
+								</form>
+							</ListItemText>
+						) : (
+							<ListItemText
+								primary={listItem.name}
+								onClick={() => {
+									setEditing(listItem.id)
+								}}
+							></ListItemText>
+						)}
+						<SecondaryActions>
+							{editing !== listItem.id &&
+								positions.map(({ position, colour }) => (
+									<PositionIndicator
+										colour={colour}
+										key={position}
+										onClick={() =>
+											updateListItem(listItem.id, {
+												position,
+											})
+										}
+										isSelected={
+											listItem.position === position
+										}
+									>
+										{position}
+									</PositionIndicator>
+								))}
+							{editing === listItem.id && (
+								<Button
+									onClick={() =>
+										removeFromList(listItem.name)
+									}
+									endIcon={<CancelIcon />}
+								>
+									Remove
+								</Button>
+							)}
+							{editing === listItem.id ? (
+								<IconButton
+									edge="end"
+									aria-label="edit player"
+									onClick={() => {
+										setEditing(null)
+									}}
+								>
+									<DoneIcon />
+								</IconButton>
+							) : (
+								<IconButton
+									edge="end"
+									aria-label="edit player"
+									onClick={() => {
+										setEditing(listItem.id)
+									}}
+								>
+									<EditIcon />
+								</IconButton>
+							)}
+						</SecondaryActions>
+					</ListItem>
+				))}
+			</List>
+		</>
+	)
+}
 export default MemberList
