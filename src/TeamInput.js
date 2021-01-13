@@ -13,7 +13,7 @@ const TeamInput = ({ addToList }) => {
 
 	const handlePaste = e => {
 		/* e.g. 4. Player Name */
-		const listNameRegex = /^\d{1,2}. [a-zA-Z* ]+$/gm
+		const listNameRegex = /^\d{1,2}. [\w\s+*()]+$/gm
 		const data = e.clipboardData.getData('text')
 		let names = data.match(listNameRegex)
 
@@ -23,8 +23,7 @@ const TeamInput = ({ addToList }) => {
 		e.preventDefault()
 		e.stopPropagation()
 		names = names.map(name => {
-			const nameRegex = /[a-zA-Z]+/g
-			name = name.match(nameRegex)[0]
+			name = name.replace(/\d{1,2}\. /, '')
 			return { name, position: 'ANY', id: uuid() }
 		})
 		addToList(names)
