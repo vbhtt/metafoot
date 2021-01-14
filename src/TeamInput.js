@@ -13,9 +13,14 @@ const TeamInput = ({ addToList }) => {
 
 	const handlePaste = e => {
 		/* e.g. 4. Player Name */
-		const listNameRegex = /^\d{1,2}. [\w\s+*()]+$/gm
+		const listNameRegex = /^\d{1,2}. [\w\s+*()]+/
 		const data = e.clipboardData.getData('text')
-		let names = data.match(listNameRegex)
+		const lines = data.split('\n')
+		let names = lines
+			.map(line => {
+				return listNameRegex.test(line) ? line : null
+			})
+			.filter(Boolean)
 
 		/* Allow normal pasting if pasted data doesn't match the format */
 		if (!names || names.length < 1) return
