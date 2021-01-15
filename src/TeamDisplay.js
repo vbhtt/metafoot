@@ -17,7 +17,7 @@ import { secondaryDark } from './common/colours'
 import { positions } from './common/data'
 
 import ShareIcon from '@material-ui/icons/Share'
-import { Button } from '@material-ui/core'
+import Button from '@material-ui/core/Button'
 
 const TeamsListContainer = styled.div`
 	display: grid;
@@ -83,7 +83,10 @@ const TeamsContainer = styled.div`
 	}
 `
 
-const colours = [['black', '#E0E0E0'], ['#f44336', '#2196F3']]
+const colours = [
+	['black', '#E0E0E0'],
+	['#f44336', '#2196F3'],
+]
 const positionSorting = {
 	GK: 0,
 	DEF: 1,
