@@ -1,5 +1,4 @@
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
+import { useState } from 'react'
 import styled from 'styled-components'
 import isEqual from 'lodash/isEqual'
 import isEmpty from 'lodash/isEmpty'
@@ -39,15 +38,7 @@ const ListContainer = styled.div`
 	}
 `
 
-const ColouredShirts = styled.div`
-	display: flex;
-	height: 48px;
-	svg {
-		width: 48px;
-	}
-`
-
-const PositionDot = styled.div`
+const PositionDot = styled.div<{ colour: string }>`
 	width: 10px;
 	height: 10px;
 	border-radius: 5px;
@@ -83,10 +74,6 @@ const TeamsContainer = styled.div`
 	}
 `
 
-const colours = [
-	['black', '#E0E0E0'],
-	['#f44336', '#2196F3'],
-]
 const positionSorting = {
 	GK: 0,
 	DEF: 1,
@@ -95,18 +82,30 @@ const positionSorting = {
 	ANY: 4,
 }
 
-const TeamList = ({ list, index, selectedPlayers, changeSelectedPlayer }) => {
+function getColour(p: Player['position']): Colour {
+	return positions.find(({ position }) => position === p)?.colour ?? 'grey'
+}
+
+type TeamIndex = 0 | 1
+
+type TeamListProps = {
+	list: Player[]
+	index: TeamIndex
+	selectedPlayers: PlayerSelection
+	changeSelectedPlayer: (player: Player, index: TeamIndex) => void
+}
+const TeamList = ({
+	list,
+	index,
+	selectedPlayers,
+	changeSelectedPlayer,
+}: TeamListProps) => {
 	const length = 2
 	const otherIndex = (index + 1) % length
-	const isOtherSelected = !isEmpty(selectedPlayers[otherIndex])
+	const isOtherSelected = !isEmpty(selectedPlayers[otherIndex as TeamIndex])
 	return (
 		<ListContainer>
 			<TeamHeading>Team {index + 1}</TeamHeading>
-			{/* <ColouredShirts>
-				{colours[index].map(colour => (
-					<ShirtIcon colour={colour} key={colour} />
-				))}
-			</ColouredShirts> */}
 			<List>
 				{list
 					.sort(
@@ -115,11 +114,9 @@ const TeamList = ({ list, index, selectedPlayers, changeSelectedPlayer }) => {
 							positionSorting[b.position]
 					)
 					.map(listItem => {
-						const colour = positions.find(
-							({ position }) => position === listItem.position
-						).colour
+						const colour = getColour(listItem.position)
 						const isSelected =
-							selectedPlayers[index].id === listItem.id
+							selectedPlayers[index]?.id === listItem.id
 						return (
 							<ListItem
 								key={listItem.id}
@@ -127,6 +124,7 @@ const TeamList = ({ list, index, selectedPlayers, changeSelectedPlayer }) => {
 									changeSelectedPlayer(listItem, index)
 								}
 								className={isSelected ? 'selected' : ''}
+								button
 							>
 								<ListItemIcon>
 									<PositionDot colour={colour} />
@@ -154,19 +152,28 @@ const TeamList = ({ list, index, selectedPlayers, changeSelectedPlayer }) => {
 	)
 }
 
-const TeamDisplay = ({ teams, setTeams }) => {
+type TeamDisplayProps = {
+	teams: Player[][] | null
+	setTeams: (teams: Player[][]) => void
+}
+
+const TeamDisplay = ({ teams, setTeams }: TeamDisplayProps) => {
 	const {
 		selectedPlayers,
 		changeSelectedPlayer,
 		resetSelectedPlayers,
 	} = usePlayerSelection()
 
-	if (!isEmpty(selectedPlayers[0]) && !isEmpty(selectedPlayers[1])) {
+	if (
+		selectedPlayers[0] !== null &&
+		selectedPlayers[1] !== null &&
+		teams !== null
+	) {
 		const _t0 = teams[0],
 			_t1 = teams[1]
 
-		remove(_t0, n => n.id === selectedPlayers[0].id)
-		remove(_t1, n => n.id === selectedPlayers[1].id)
+		remove(_t0, n => n.id === selectedPlayers[0]!.id)
+		remove(_t1, n => n.id === selectedPlayers[1]!.id)
 
 		_t0.push(selectedPlayers[1])
 		_t1.push(selectedPlayers[0])
@@ -177,10 +184,10 @@ const TeamDisplay = ({ teams, setTeams }) => {
 
 	const handleShareTeams = () => {
 		let sharedTeams = ''
-		if (navigator.share) {
+		if (navigator.share && teams !== null) {
 			for (let team in teams) {
 				sharedTeams += `\nTeam ${parseInt(team) + 1}\n`
-				sharedTeams = teams[team].reduce((a, value) => {
+				sharedTeams = teams[team].reduce((a: string, value: Player) => {
 					return a + value.name + '\n'
 				}, sharedTeams)
 			}
@@ -192,17 +199,17 @@ const TeamDisplay = ({ teams, setTeams }) => {
 	return (
 		<TeamsContainer>
 			<TeamsListContainer>
-				{teams.map((team, index) => (
+				{teams.slice(0, 2).map((team, index) => (
 					<TeamList
 						list={team}
 						key={index}
-						index={index}
+						index={index as TeamIndex}
 						changeSelectedPlayer={changeSelectedPlayer}
 						selectedPlayers={selectedPlayers}
 					/>
 				))}
 			</TeamsListContainer>
-			{navigator.share && (
+			{typeof navigator.share === 'function' && (
 				<div id="share-teams">
 					<Button endIcon={<ShareIcon />} onClick={handleShareTeams}>
 						Share
@@ -213,19 +220,28 @@ const TeamDisplay = ({ teams, setTeams }) => {
 	)
 }
 
+type PlayerSelection = {
+	/** Selected player in first column */
+	0: Player | null
+
+	/** Selected player in second column */
+	1: Player | null
+}
 const usePlayerSelection = () => {
-	const initialState = { 0: {}, 1: {} }
-	const [selectedPlayers, setSelectedPlayers] = useState(initialState)
+	const initialState: PlayerSelection = { 0: null, 1: null }
+	const [selectedPlayers, setSelectedPlayers] = useState<PlayerSelection>(
+		initialState
+	)
 
 	/**
 	 * Marks a player as selected
-	 * @param {object} player The player object to mark as selected
-	 * @param {number} teamIndex The team the player is in
+	 * @param player The player object to mark as selected
+	 * @param teamIndex The team the player is in
 	 */
-	const changeSelectedPlayer = (player, teamIndex) => {
+	const changeSelectedPlayer = (player: Player, teamIndex: TeamIndex) => {
 		if (isEqual(selectedPlayers[teamIndex], player)) {
 			/* Player is already selected, deselect them */
-			setSelectedPlayers({ ...selectedPlayers, [teamIndex]: {} })
+			setSelectedPlayers({ ...selectedPlayers, [teamIndex]: null })
 		} else {
 			setSelectedPlayers({
 				...selectedPlayers,
@@ -239,18 +255,5 @@ const usePlayerSelection = () => {
 	 */
 	const resetSelectedPlayers = () => setSelectedPlayers(initialState)
 	return { selectedPlayers, changeSelectedPlayer, resetSelectedPlayers }
-}
-
-TeamDisplay.propTypes = {
-	teams: PropTypes.arrayOf(
-		PropTypes.arrayOf(
-			PropTypes.shape({
-				name: PropTypes.string,
-				id: PropTypes.string,
-				position: PropTypes.string,
-			})
-		)
-	),
-	setTeams: PropTypes.func,
 }
 export default TeamDisplay

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState } from 'react'
 import styled from 'styled-components'
 
 import MuiList from '@material-ui/core/List'
@@ -8,7 +8,6 @@ import ListItemText from '@material-ui/core/ListItemText'
 import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
-import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 
 import CancelIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
@@ -26,7 +25,14 @@ const List = styled(MuiList)`
 		max-width: 40vw;
 	}
 `
-const PositionIndicator = styled.div`
+type PositionIndicatorProps = {
+	/** The highlight colour */
+	colour: string
+
+	/** Whether the indicator is selected or not */
+	isSelected: boolean
+}
+const PositionIndicator = styled.div<PositionIndicatorProps>`
 	height: 30px;
 	width: 40px;
 	border-radius: 8px;
@@ -53,9 +59,25 @@ const ListHeader = styled.div`
 	justify-content: space-between;
 	padding: 8px 52px 2px 16px;
 `
+
+type MemberListProps = {
+	/** The list of players */
+	list: Player[]
+
+	/** Function to remove a player from the list */
+	removeFromList: (name: Player['name']) => void
+
+	/** Function to update player details */
+	updateListItem: (id: Player['id'], changes: Partial<Player>) => void
+}
+
 /** Component to show the list of all players */
-const MemberList = ({ list, removeFromList, updateListItem }) => {
-	const [editing, setEditing] = useState(null)
+const MemberList = ({
+	list,
+	removeFromList,
+	updateListItem,
+}: MemberListProps) => {
+	const [editing, setEditing] = useState<Player['id'] | null>(null)
 	return (
 		<>
 			<ListHeader>

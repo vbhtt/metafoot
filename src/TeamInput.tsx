@@ -1,5 +1,4 @@
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
+import { useState } from 'react'
 import MuiTextField from '@material-ui/core/TextField'
 import styled from 'styled-components'
 import { uuid } from './common/helpers'
@@ -8,26 +7,35 @@ const TextField = styled(MuiTextField)`
 	width: 80vw;
 `
 
-const TeamInput = ({ addToList }) => {
+type TeamInputProps = {
+	/** Function to add players to the list */
+	addToList: (names: Player[]) => void
+}
+
+type ExcludesFalsy = <T>(x: T | null | undefined | false) => x is T
+
+function TeamInput({ addToList }: TeamInputProps) {
 	const [inputValue, setInputValue] = useState('')
 
-	const handlePaste = e => {
+	const handlePaste = (e: React.ClipboardEvent) => {
 		/* e.g. 4. Player Name */
 		const listNameRegex = /^\d{1,2}. [\w\s+*()]+/
 		const data = e.clipboardData.getData('text')
 		const lines = data.split('\n')
-		let names = lines
+
+		let namesList = lines
 			.map(line => {
 				return listNameRegex.test(line) ? line : null
 			})
-			.filter(Boolean)
+			.filter((Boolean as any) as ExcludesFalsy)
 
 		/* Allow normal pasting if pasted data doesn't match the format */
-		if (!names || names.length < 1) return
+		if (namesList.length < 1) return
 
 		e.preventDefault()
 		e.stopPropagation()
-		names = names.map(name => {
+		const names = namesList.map<Player>(name => {
+			// Remove serial number from start of name
 			name = name.replace(/\d{1,2}\. /, '')
 			return { name, position: 'ANY', id: uuid() }
 		})
@@ -58,11 +66,6 @@ const TeamInput = ({ addToList }) => {
 			/>
 		</form>
 	)
-}
-
-TeamInput.propTypes = {
-	/* Function to add the input text to the list */
-	addToList: PropTypes.func,
 }
 
 export default TeamInput

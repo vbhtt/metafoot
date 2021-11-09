@@ -1,4 +1,4 @@
-export const positions = [
+export const positions: { position: Position; colour: string }[] = [
 	{ position: 'GK', colour: '#EF6C00' },
 	{ position: 'DEF', colour: '#FBC02D' },
 	{ position: 'MID', colour: '#4CAF50' },

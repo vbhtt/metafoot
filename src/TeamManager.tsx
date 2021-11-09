@@ -9,7 +9,7 @@ import TeamInput from './TeamInput'
 import MemberList from './MemberList'
 import TeamDisplay from './TeamDisplay'
 
-const testList = [
+const testList: Player[] = [
 	'Pecky',
 	'Rajesh',
 	'David',
@@ -47,7 +47,7 @@ const TeamManager = () => {
 	const { list, addToList, removeFromList, updateListItemById } = useList(
 		initialList
 	)
-	const [teams, setTeams] = useState(null)
+	const [teams, setTeams] = useState<Player[][] | null>(null)
 
 	/**
 	 * Scroll to the bottom of the screen when teams are updated
@@ -86,30 +86,30 @@ const TeamManager = () => {
 	)
 }
 
-const useList = initialList => {
-	const [list, setList] = useState(initialList)
+function useList(initialList: Player[]) {
+	const [list, setList] = useState<Player[]>(initialList)
 
 	/**
 	 * Adds an item to the start of the list
-	 * @param {Object} item The item object to add to the list
+	 * @param item The item object to add to the list
 	 */
-	const addToList = item => {
+	const addToList = (item: Player[]) => {
 		setList([...item, ...list])
 	}
 
 	/**
 	 * Removes an item from the list by name
-	 * @param {string} name The `name` of the item to remove from the list
+	 * @param name The `name` of the item to remove from the list
 	 */
-	const removeFromList = name =>
+	const removeFromList = (name: Player['name']) =>
 		setList(filter(list, item => item.name !== name))
 
 	/**
 	 * Updates a list item by id
-	 * @param {string} id The id of the list item to update
-	 * @param {object} data The new updated list item object
+	 * @param id The id of the list item to update
+	 * @param data The new updated list item object
 	 */
-	const updateListItemById = (id, data) => {
+	const updateListItemById = (id: Player['id'], data: Partial<Player>) => {
 		const index = list.findIndex(obj => obj.id === id)
 		const newList = [
 			...list.slice(0, index),

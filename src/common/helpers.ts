@@ -7,12 +7,12 @@ export const uuid = () =>
 	})
 
 /**
- *
- * @param {array} teamMembers array of team member objects
+ * Generates two teams from a list of players
+ * @param teamMembers array of team member objects
  */
-export const generateTeams = teamMembers => {
-	let teams = [[], []]
-	const extras = []
+export const generateTeams = (teamMembers: Player[]): Player[][] => {
+	let teams: Player[][] = [[], []]
+	const extras: Player[] = []
 	let members = teamMembers.map(teamMember => ({
 		...teamMember,
 		id: uuid(),
