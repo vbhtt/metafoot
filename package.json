@@ -36,7 +36,8 @@
 		"test": "react-scripts test --runInBand",
 		"test:coverage": "react-scripts test --coverage --runInBand --watchAll=false",
 		"test:prebuild": "react-scripts test --watchAll=false",
-		"eject": "react-scripts eject"
+		"eject": "react-scripts eject",
+		"prepare": "husky install"
 	},
 	"eslintConfig": {
 		"extends": "react-app",
@@ -66,13 +67,8 @@
 		"babel-plugin-styled-components": "^1.13.3",
 		"husky": "^7.0.4",
 		"jest-styled-components": "^7.0.5",
-		"prettier": "2.4.1",
-		"pretty-quick": "^3.1.1"
-	},
-	"husky": {
-		"hooks": {
-			"pre-commit": "pretty-quick --staged"
-		}
+		"lint-staged": "^11.2.6",
+		"prettier": "2.4.1"
 	},
 	"jest": {
 		"collectCoverageFrom": [
@@ -81,7 +77,6 @@
 		"moduleNameMapper": {
 			"\\..css$": "identity-obj-proxy"
 		},
-		"displayName": "client",
 		"coverageThreshold": {
 			"global": {
 				"statements": 0,
@@ -90,5 +85,9 @@
 				"lines": 0
 			}
 		}
+	},
+	"lint-staged": {
+		"*.{js,css,md,ts,tsx,json}": "prettier --write --ignore-path ./.gitignore",
+		"*.{js,ts,jsx,tsx}": "eslint --cache --fix"
 	}
 }

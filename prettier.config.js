@@ -7,4 +7,5 @@ module.exports = {
 	trailingComma: 'es5',
 	arrowParens: 'avoid',
 	requirePragma: false,
+	endOfLine: 'lf',
 }
